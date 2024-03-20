@@ -170,7 +170,33 @@ const Order = ({ positionStore }) => {
                 )}
                     
               </TableCell>
-              <TableCell rowSpan={orders.rowspan}>PROFIT</TableCell>
+              <TableCell rowSpan={orders.rowspan}>
+                {tokenRecords?.length > 0 ? (
+                  <>
+                    {(() => {
+                      const sum = orders.symbol_token.reduce(
+                        (sum, token) =>
+                          sum + parseFloat(findLTPByToken(token, tokenRecords)),
+                        0
+                      );
+                      const profit = sum - parseFloat(orders.price); // Calculate profit
+                      return (
+                        <>
+                          {profit.toFixed(2)}{" "}
+                          {profit > 0 ? ( // Check if profit is positive or negative
+                            <Icon name="caret up" color="green" />
+                          ) : (
+                            <Icon name="caret down" color="red" />
+                          )}
+                        </>
+                      );
+                    })()}
+                  </>
+                ) : (
+                  "--"
+                )}
+                    
+              </TableCell>
             </>
           )}
           {contentIndex !== 0 && (
