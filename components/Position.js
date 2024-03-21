@@ -32,6 +32,7 @@ const Position = ({ handleStepClick }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [scriptJsonData, setScriptJsonData] = useState([]);
   const [selectedCEPESymbol, setSelectedCEPESymbol] = useState("");
+  const [selectedLotSize, setSelectedLotsize] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,6 +79,10 @@ const Position = ({ handleStepClick }) => {
     { key: "22/10/2024", text: "22/10/2024", value: "22/10/2024" },
     { key: "22/10/2025", text: "22/10/2025", value: "22/10/2025" },
   ];
+  const lots = [];
+  for (let i = 1; i <= 100; i++) {
+    lots.push({ key: i.toString(), text: i.toString(), value: i.toString() });
+  }
 
   const [formData, setformData] = useState({
     script: "",
@@ -98,8 +103,9 @@ const Position = ({ handleStepClick }) => {
       expdate: formData.expdate,
       price: formData.price,
       lots: formData.lots,
-
+      lotsize: selectedLotSize,
       symbol_token: returnSymbolToken(selectedCEPESymbol),
+      investment: formData.price * formData.lots * selectedLotSize,
     });
     console.log("+++++++");
     console.log(buyStore.orders);
@@ -248,6 +254,8 @@ const Position = ({ handleStepClick }) => {
 
     console.log(extractedSymbolToken);
     setSelectedCEPESymbol(extractedSymbolToken[0].symbol);
+    setSelectedLotsize(extractedSymbolToken[0].lotsize);
+    console.log(selectedLotSize);
   };
 
   const returnSymbolToken = (symbol) => {
@@ -357,7 +365,11 @@ const Position = ({ handleStepClick }) => {
       </FormField>
       <FormField error={lotsError}>
         <label>Lots</label>
-        <Input
+        <Dropdown
+          placeholder="Lots"
+          fluid
+          selection
+          options={lots}
           value={formData.lots}
           onChange={(e, { value }) => setformData({ ...formData, lots: value })}
         />

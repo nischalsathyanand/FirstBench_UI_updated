@@ -1,5 +1,6 @@
 export default function combineData(data) {
   const combinedData = {};
+  console.log(data);
 
   data.forEach((item) => {
     const key = item.script;
@@ -12,7 +13,9 @@ export default function combineData(data) {
         bs: [],
         expdate: item.expdate,
         price: 0,
-        iv: [],
+        lots: [],
+        lotsize: 0,
+        investment: 0,
         lastUpdate: item.lastUpdate,
         rowspan: 1,
       };
@@ -30,8 +33,12 @@ export default function combineData(data) {
     });
     combinedData[key].symbol_token.push(item.symbol_token);
     combinedData[key].bs.push({ item: item.bs, lastUpdate: item.lastUpdate });
-    combinedData[key].iv.push({ item: item.iv, lastUpdate: item.lastUpdate });
+    combinedData[key].lots.push({
+      item: item.lots,
+      lastUpdate: item.lastUpdate,
+    });
     combinedData[key].price += parseFloat(item.price);
+    combinedData[key].investment += parseFloat(item.investment);
   });
 
   return Object.values(combinedData);

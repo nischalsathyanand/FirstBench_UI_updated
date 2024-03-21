@@ -20,7 +20,7 @@ const Order = ({ positionStore }) => {
   const [oldRows, setOldRows] = useState([]);
   const [tokenRecords, setTokenRecords] = useState([]);
   const currentPrice = 3000;
-  const threshold = 2000;
+  const threshold = 5000;
 
   function findLTPByToken(token, array) {
     const foundItem = array.find((item) => item.symbol === token);
@@ -180,7 +180,9 @@ const Order = ({ positionStore }) => {
                     "--"
                   )}
                 </TableCell>
-                <TableCell rowSpan={orders.rowspan}>Invested Amount</TableCell>
+                <TableCell rowSpan={orders.rowspan}>
+                  {orders.investment}
+                </TableCell>
                 <TableCell rowSpan={orders.rowspan}>
                   {tokenRecords?.length > 0 ? (
                     <>

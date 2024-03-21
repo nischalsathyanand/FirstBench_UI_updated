@@ -19,8 +19,9 @@ export default function combineBuys(buys) {
       combinedBuys[script].cepe = buy.cepe;
       combinedBuys[script].bs = buy.bs;
       combinedBuys[script].expdate = buy.expdate;
-      combinedBuys[script].price = parseInt(combinedBuys[script].price) + parseInt(buy.price);
-      combinedBuys[script].iv = buy.iv;
+      combinedBuys[script].price =
+        parseInt(combinedBuys[script].price) + parseInt(buy.price);
+      combinedBuys[script].lots = buy.lots;
       combinedBuys[script].rowspan++;
     } else {
       combinedBuys[script] = {
@@ -30,8 +31,8 @@ export default function combineBuys(buys) {
         bs: buy.bs,
         expdate: buy.expdate,
         price: buy.price,
-        iv: buy.iv,
-        rowspan: 1 
+        lots: buy.lots,
+        rowspan: 1,
       };
     }
   });
@@ -39,4 +40,3 @@ export default function combineBuys(buys) {
   const combinedBuysArray = Object.values(combinedBuys);
   return combinedBuysArray;
 }
-
