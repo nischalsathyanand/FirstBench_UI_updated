@@ -11,6 +11,7 @@ import {
   TableBody,
   Table,
   Icon,
+  Button,
 } from "semantic-ui-react";
 import { get } from "mobx";
 
@@ -117,107 +118,123 @@ const Order = ({ positionStore }) => {
   }, []);
 
   const calculatePositive = (lastUpdate) => Date.now() - lastUpdate < threshold;
-  //combineData(positionStore.buys).map((orders, index) =>
-  const orderRows = positionStore.buys.map((orders, index) =>
-    orders.cepe.map((content, contentIndex) => {
-      const isPositive = calculatePositive(
-        orders.sprice[contentIndex].lastUpdate
-      );
-      return (
-        <TableRow key={`${index}-${contentIndex}`}>
-          {contentIndex === 0 && (
-            <>
-              <TableCell rowSpan={orders.rowspan}>{orders.script}</TableCell>
-              <TableCell positive={isPositive}>
-                {orders.sprice[contentIndex].item}
-              </TableCell>
-              <TableCell positive={isPositive}>
-                {orders.cepe[contentIndex].item}
-              </TableCell>
-              <TableCell positive={isPositive}>
-                {orders.bs[contentIndex].item}
-              </TableCell>
-              <TableCell rowSpan={orders.rowspan}>{orders.expdate}</TableCell>
-              <TableCell positive={isPositive}>
-                {orders.iv[contentIndex].item}
-              </TableCell>
 
-              <TableCell rowSpan={orders.rowspan}>{orders.price}</TableCell>
-              <TableCell rowSpan={orders.rowspan}>CIV</TableCell>
-              <TableCell rowSpan={orders.rowspan}>
-                {tokenRecords?.length > 0 ? (
-                  <>
-                    {(() => {
-                      const sum = orders.symbol_token.reduce(
-                        (sum, token) =>
-                          sum + parseFloat(findLTPByToken(token, tokenRecords)),
-                        0
-                      );
-                      return (
-                        <>
-                          {sum.toFixed(2)}{" "}
-                          {sum > orders.price ? (
-                            <Icon name="caret up" color="green" />
-                          ) : (
-                            <Icon name="caret down" color="red" />
-                          )}
-                        </>
-                      );
-                    })()}
-                  </>
-                ) : (
-                  "--"
-                )}
-                    
-              </TableCell>
-              <TableCell rowSpan={orders.rowspan}>
-                {tokenRecords?.length > 0 ? (
-                  <>
-                    {(() => {
-                      const sum = orders.symbol_token.reduce(
-                        (sum, token) =>
-                          sum + parseFloat(findLTPByToken(token, tokenRecords)),
-                        0
-                      );
-                      const profit = sum - parseFloat(orders.price); // Calculate profit
-                      return (
-                        <>
-                          {profit.toFixed(2)}{" "}
-                          {profit > 0 ? ( // Check if profit is positive or negative
-                            <Icon name="caret up" color="green" />
-                          ) : (
-                            <Icon name="caret down" color="red" />
-                          )}
-                        </>
-                      );
-                    })()}
-                  </>
-                ) : (
-                  "--"
-                )}
-                    
-              </TableCell>
-            </>
-          )}
-          {contentIndex !== 0 && (
-            <>
-              <TableCell positive={isPositive}>
-                {orders.sprice[contentIndex].item}
-              </TableCell>
-              <TableCell positive={isPositive}>
-                {orders.cepe[contentIndex].item}
-              </TableCell>
-              <TableCell positive={isPositive}>
-                {orders.bs[contentIndex].item}
-              </TableCell>
-              <TableCell positive={isPositive}>
-                {orders.iv[contentIndex].item}
-              </TableCell>
-            </>
-          )}
-        </TableRow>
-      );
-    })
+  //adding delete
+  const handleDelete = (scriptIndex, recordIndex) => {
+    const updatedBuys = [...positionStore.buys];
+    updatedBuys[scriptIndex].symbol_token.splice(recordIndex, 1);
+    if (updatedBuys[scriptIndex].symbol_token.length === 0) {
+      updatedBuys.splice(scriptIndex, 1);
+    }
+    positionStore.buys = updatedBuys;
+  };
+  //combineData(positionStore.buys).map((orders, index) =>
+  const orderRows = positionStore.buys.map(
+    (
+      orders,
+      scriptIndex // Changed scriptindex to scriptIndex
+    ) =>
+      orders.cepe.map((content, contentIndex) => {
+        const isPositive = calculatePositive(
+          orders.sprice[contentIndex].lastUpdate
+        );
+        return (
+          <TableRow key={`${scriptIndex}-${contentIndex}`}>
+            {contentIndex === 0 && (
+              <>
+                <TableCell rowSpan={orders.rowspan}>{orders.script}</TableCell>
+                <TableCell positive={isPositive}>
+                  {orders.sprice[contentIndex].item}
+                </TableCell>
+                <TableCell positive={isPositive}>
+                  {orders.cepe[contentIndex].item}
+                </TableCell>
+                <TableCell positive={isPositive}>
+                  {orders.bs[contentIndex].item}
+                </TableCell>
+                <TableCell rowSpan={orders.rowspan}>{orders.expdate}</TableCell>
+                <TableCell rowSpan={orders.rowspan}>{orders.price}</TableCell>
+                <TableCell rowSpan={orders.rowspan}>
+                  {tokenRecords?.length > 0 ? (
+                    <>
+                      {(() => {
+                        const sum = orders.symbol_token.reduce(
+                          (sum, token) =>
+                            sum +
+                            parseFloat(findLTPByToken(token, tokenRecords)),
+                          0
+                        );
+                        return (
+                          <>
+                            {sum.toFixed(2)}{" "}
+                            {sum > orders.price ? (
+                              <Icon name="caret up" color="green" />
+                            ) : (
+                              <Icon name="caret down" color="red" />
+                            )}
+                          </>
+                        );
+                      })()}
+                    </>
+                  ) : (
+                    "--"
+                  )}
+                </TableCell>
+                <TableCell rowSpan={orders.rowspan}>Invested Amount</TableCell>
+                <TableCell rowSpan={orders.rowspan}>
+                  {tokenRecords?.length > 0 ? (
+                    <>
+                      {(() => {
+                        const sum = orders.symbol_token.reduce(
+                          (sum, token) =>
+                            sum +
+                            parseFloat(findLTPByToken(token, tokenRecords)),
+                          0
+                        );
+                        const profit = sum - parseFloat(orders.price);
+                        return (
+                          <>
+                            {profit.toFixed(2)}{" "}
+                            {profit > 0 ? (
+                              <Icon name="caret up" color="green" />
+                            ) : (
+                              <Icon name="caret down" color="red" />
+                            )}
+                          </>
+                        );
+                      })()}
+                    </>
+                  ) : (
+                    "--"
+                  )}
+                </TableCell>
+                <TableCell>
+                  <Button
+                    icon
+                    color="red"
+                    onClick={() => handleDelete(scriptIndex, contentIndex)}
+                  >
+                    <Icon name="trash" />
+                  </Button>
+                </TableCell>
+              </>
+            )}
+            {contentIndex !== 0 && (
+              <>
+                <TableCell positive={isPositive}>
+                  {orders.sprice[contentIndex].item}
+                </TableCell>
+                <TableCell positive={isPositive}>
+                  {orders.cepe[contentIndex].item}
+                </TableCell>
+                <TableCell positive={isPositive}>
+                  {orders.bs[contentIndex].item}
+                </TableCell>
+              </>
+            )}
+          </TableRow>
+        );
+      })
   );
 
   return (
@@ -230,12 +247,11 @@ const Order = ({ positionStore }) => {
             <TableHeaderCell>CE/PE</TableHeaderCell>
             <TableHeaderCell>Buy/Sell</TableHeaderCell>
             <TableHeaderCell>Expiry Date</TableHeaderCell>
-            <TableHeaderCell>Iv</TableHeaderCell>
             <TableHeaderCell>Bought</TableHeaderCell>
-            <TableHeaderCell>Current Iv</TableHeaderCell>
-
             <TableHeaderCell>Current Price</TableHeaderCell>
-            <TableHeaderCell>Profite</TableHeaderCell>
+            <TableHeaderCell>Invested Amount</TableHeaderCell>
+            <TableHeaderCell>Profit</TableHeaderCell>
+            <TableHeaderCell></TableHeaderCell>
           </TableRow>
         </TableHeader>
         <TableBody>{orderRows}</TableBody>

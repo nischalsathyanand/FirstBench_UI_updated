@@ -25,7 +25,7 @@ const Position = ({ handleStepClick }) => {
   const [price, setPrice] = useState("");
   const [saveButton, setSaveButton] = useState(false);
   const [priceError, setPriceError] = useState(false);
-  const [ivError, setIvError] = useState(false);
+  const [lotsError, setLotsError] = useState(false);
   const [scriptData, setScriptData] = useState([]);
   const [strike, setStrike] = useState([]);
   const [expairy, setExpairy] = useState([]);
@@ -86,7 +86,7 @@ const Position = ({ handleStepClick }) => {
     bs: "",
     expdate: "",
     price: "",
-    iv: "",
+    lots: "",
   });
   const handleAddScript = () => {
     if (!validateInputs()) return;
@@ -97,9 +97,11 @@ const Position = ({ handleStepClick }) => {
       bs: formData.bs,
       expdate: formData.expdate,
       price: formData.price,
-      iv: formData.iv,
+      lots: formData.lots,
+
       symbol_token: returnSymbolToken(selectedCEPESymbol),
     });
+    console.log("+++++++");
     console.log(buyStore.orders);
     toggleOrderCount(buyStore.orders.length);
   };
@@ -114,7 +116,7 @@ const Position = ({ handleStepClick }) => {
       bs: "",
       expdate: "",
       price: "",
-      iv: "",
+      lots: "",
     });
   };
   const validateInputs = () => {
@@ -127,11 +129,11 @@ const Position = ({ handleStepClick }) => {
       setPriceError(false);
     }
 
-    if (!formData.iv || isNaN(formData.iv)) {
-      setIvError(true);
+    if (!formData.lots || isNaN(formData.lots)) {
+      setLotsError(true);
       isValid = false;
     } else {
-      setIvError(false);
+      setLotsError(false);
     }
 
     return isValid;
@@ -277,10 +279,18 @@ const Position = ({ handleStepClick }) => {
         <Dropdown
           placeholder="Script"
           fluid
+          search
           selection
           options={scriptData}
           value={formData.script}
           onChange={handleScriptChange}
+          onSearchChange={(e, { searchQuery }) => {
+            const filteredOptions = scriptData.filter((option) =>
+              option.text.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+            setScriptData(filteredOptions);
+          }}
+          scrolling // Enable scrolling
         />
       </FormField>
       <FormField>
@@ -345,13 +355,13 @@ const Position = ({ handleStepClick }) => {
         />
         {priceError && <Message error content="Price must be a number" />}
       </FormField>
-      <FormField error={ivError}>
-        <label>Iv</label>
+      <FormField error={lotsError}>
+        <label>Lots</label>
         <Input
-          value={formData.iv}
-          onChange={(e, { value }) => setformData({ ...formData, iv: value })}
+          value={formData.lots}
+          onChange={(e, { value }) => setformData({ ...formData, lots: value })}
         />
-        {ivError && <Message error content="Iv must be a number" />}
+        {lotsError && <Message error content="Iv must be a number" />}
       </FormField>
 
       <Button color="green" onClick={handleAddScript}>
