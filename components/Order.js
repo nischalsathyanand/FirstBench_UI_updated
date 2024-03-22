@@ -21,6 +21,7 @@ const Order = ({ positionStore }) => {
   const [tokenRecords, setTokenRecords] = useState([]);
   const currentPrice = 3000;
   const threshold = 5000;
+  const [deleteHovered, setDeleteHovered] = useState(false);
 
   function findLTPByToken(token, array) {
     const foundItem = array.find((item) => item.symbol === token);
@@ -127,6 +128,7 @@ const Order = ({ positionStore }) => {
       updatedBuys.splice(scriptIndex, 1);
     }
     positionStore.buys = updatedBuys;
+    setDeleteHovered(false);
   };
   //combineData(positionStore.buys).map((orders, index) =>
   const orderRows = positionStore.buys.map(
@@ -178,7 +180,7 @@ const Order = ({ positionStore }) => {
                     </>
                   ) : (
                     "--"
-                  )}
+                  )}{" "}
                 </TableCell>
                 <TableCell rowSpan={orders.rowspan}>
                   {orders.investment}
@@ -187,34 +189,37 @@ const Order = ({ positionStore }) => {
                   {tokenRecords?.length > 0 ? (
                     <>
                       {(() => {
-                        const sum = orders.symbol_token.reduce(
+                        const currentPrice = orders.symbol_token.reduce(
                           (sum, token) =>
                             sum +
                             parseFloat(findLTPByToken(token, tokenRecords)),
                           0
                         );
-                        const profit = sum - parseFloat(orders.price);
-                        return (
-                          <>
-                            {profit.toFixed(2)}{" "}
-                            {profit > 0 ? (
-                              <Icon name="caret up" color="green" />
-                            ) : (
-                              <Icon name="caret down" color="red" />
-                            )}
-                          </>
-                        );
+
+                        console.log(orders.lotsize);
+                        console.log(orders.lots);
+                        console.log(orders.investment);
+                        console.log(currentPrice);
+                        return parseFloat(
+                          orders.profitdata * currentPrice - orders.investment
+                        ).toFixed(2);
                       })()}
                     </>
                   ) : (
-                    "--"
+                    0
                   )}
                 </TableCell>
+
                 <TableCell>
                   <Button
                     icon
-                    color="red"
+                    onMouseEnter={() => setDeleteHovered(true)}
+                    onMouseLeave={() => setDeleteHovered(false)}
                     onClick={() => handleDelete(scriptIndex, contentIndex)}
+                    style={{
+                      backgroundColor: deleteHovered ? "red" : "transparent",
+                      color: deleteHovered ? "white" : "red",
+                    }}
                   >
                     <Icon name="trash" />
                   </Button>

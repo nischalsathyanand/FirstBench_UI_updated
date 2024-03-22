@@ -26,7 +26,7 @@ const LoginForm = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userId, password,uId:userId }),
+        body: JSON.stringify({ userId, password, uId: userId }),
       });
 
       if (!response.ok) {

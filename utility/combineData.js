@@ -16,6 +16,7 @@ export default function combineData(data) {
         lots: [],
         lotsize: 0,
         investment: 0,
+        profitdata: 0,
         lastUpdate: item.lastUpdate,
         rowspan: 1,
       };
@@ -37,7 +38,9 @@ export default function combineData(data) {
       item: item.lots,
       lastUpdate: item.lastUpdate,
     });
+    combinedData[key].lotsize += parseFloat(item.lotsize);
     combinedData[key].price += parseFloat(item.price);
+    combinedData[key].profitdata += parseFloat(item.profitdata);
     combinedData[key].investment += parseFloat(item.investment);
   });
 

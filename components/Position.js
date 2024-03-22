@@ -106,6 +106,7 @@ const Position = ({ handleStepClick }) => {
       lotsize: selectedLotSize,
       symbol_token: returnSymbolToken(selectedCEPESymbol),
       investment: formData.price * formData.lots * selectedLotSize,
+      profitdata: formData.lots * selectedLotSize,
     });
     console.log("+++++++");
     console.log(buyStore.orders);
@@ -309,14 +310,16 @@ const Position = ({ handleStepClick }) => {
           </Segment>
         ) : (
           <Dropdown
-            placeholder="strike price"
+            placeholder="Strike Price"
             fluid
+            search
             selection
             options={strike}
             value={formData.sprice}
             onChange={(e, { value }) =>
               setformData({ ...formData, sprice: value })
             }
+            scrolling // Enable scrolling
           />
         )}
       </FormField>
@@ -368,11 +371,14 @@ const Position = ({ handleStepClick }) => {
         <Dropdown
           placeholder="Lots"
           fluid
+          search
           selection
           options={lots}
           value={formData.lots}
           onChange={(e, { value }) => setformData({ ...formData, lots: value })}
+          scrolling // Enable scrolling
         />
+
         {lotsError && <Message error content="Iv must be a number" />}
       </FormField>
 
