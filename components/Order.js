@@ -3,6 +3,7 @@ import { inject, observer } from "mobx-react";
 import positionStore from "/store/positionStore";
 import combineBuys from "../utility/combinedBuys";
 import combineData from "../utility/combineData";
+
 import {
   TableRow,
   TableHeaderCell,
@@ -213,12 +214,20 @@ const Order = ({ positionStore }) => {
                 <TableCell>
                   <Button
                     icon
-                    onMouseEnter={() => setDeleteHovered(true)}
-                    onMouseLeave={() => setDeleteHovered(false)}
+                    onMouseEnter={() =>
+                      setDeleteHovered(`${scriptIndex}-${contentIndex}`)
+                    }
+                    onMouseLeave={() => setDeleteHovered(null)}
                     onClick={() => handleDelete(scriptIndex, contentIndex)}
                     style={{
-                      backgroundColor: deleteHovered ? "red" : "transparent",
-                      color: deleteHovered ? "white" : "red",
+                      backgroundColor:
+                        deleteHovered === `${scriptIndex}-${contentIndex}`
+                          ? "red"
+                          : "transparent",
+                      color:
+                        deleteHovered === `${scriptIndex}-${contentIndex}`
+                          ? "white"
+                          : "red",
                     }}
                   >
                     <Icon name="trash" />

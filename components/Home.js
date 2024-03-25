@@ -5,7 +5,7 @@ import Position from "./Position";
 import { Link, useNavigate } from "react-router-dom";
 import logoImage from "/images/fb2.png";
 import { useLocation } from "react-router-dom";
-
+import "../index.css";
 import {
   Container,
   Divider,
@@ -42,7 +42,7 @@ function Home() {
   };
 
   return (
-    <div>
+    <div className="homestyle">
       <Menu fixed="top" style={menuStyle} inverted>
         <Container>
           <Menu.Item as="a">
@@ -63,7 +63,7 @@ function Home() {
                 alt="Logo"
                 style={{ marginRight: "2.0em" }}
               />
-              First Bench
+              <label className="heading">First Bench</label>
             </Header>
           </Menu.Item>
 
@@ -80,7 +80,7 @@ function Home() {
         </Container>
       </Menu>
 
-      <Container style={{ maxWidth: "100%", marginTop: "6em" }}>
+      <Container style={{ maxWidth: "100%", marginTop: "4.5em" }}>
         <StepGroup size="mini">
           <Step
             active={activeStep === 0}
