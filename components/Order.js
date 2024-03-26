@@ -3,7 +3,6 @@ import { inject, observer } from "mobx-react";
 import positionStore from "/store/positionStore";
 import combineBuys from "../utility/combinedBuys";
 import combineData from "../utility/combineData";
-
 import {
   TableRow,
   TableHeaderCell,
@@ -20,7 +19,6 @@ const Order = ({ positionStore }) => {
   const [highlightedRows, setHighlightedRows] = useState([]);
   const [oldRows, setOldRows] = useState([]);
   const [tokenRecords, setTokenRecords] = useState([]);
-  const currentPrice = 3000;
   const threshold = 5000;
   const [deleteHovered, setDeleteHovered] = useState(false);
 
@@ -184,33 +182,54 @@ const Order = ({ positionStore }) => {
                   )}{" "}
                 </TableCell>
                 <TableCell rowSpan={orders.rowspan}>
-                  {orders.investment}
+                  {/* Sum up the items in the investment JSON array */}
+                  {orders.investment.reduce(
+                    (total, item) => total + item.item,
+                    0
+                  )}
                 </TableCell>
                 <TableCell rowSpan={orders.rowspan}>
                   {tokenRecords?.length > 0 ? (
                     <>
                       {(() => {
-                        const currentPrice = orders.symbol_token.reduce(
-                          (sum, token) =>
-                            sum +
-                            parseFloat(findLTPByToken(token, tokenRecords)),
-                          0
-                        );
+                        // Initialize total profit to 0
+                        let totalProfit = 0;
 
-                        console.log(orders.lotsize);
-                        console.log(orders.lots);
-                        console.log(orders.investment);
-                        console.log(currentPrice);
-                        return parseFloat(
-                          orders.profitdata * currentPrice - orders.investment
-                        ).toFixed(2);
+                        // Iterate over each item in the investment array
+                        orders.investment.forEach((item, index) => {
+                          // Get the token corresponding to the current index
+                          const token = orders.symbol_token[index];
+
+                          // Calculate current price for the specific token
+                          const currentPrice = parseFloat(
+                            findLTPByToken(token, tokenRecords)
+                          );
+
+                          // Calculate profit for each item and add it to totalProfit
+                          const currentProfit = parseFloat(
+                            orders.profitdata[index].item * currentPrice -
+                              item.item
+                          );
+
+                          totalProfit += currentProfit;
+
+                          console.log(
+                            "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
+                          );
+                          console.log(
+                            `Investment: ${item.item} ProfitData: ${orders.profitdata[index].item} Token : ${token} CurrentPrice: ${currentPrice} Profit: ${currentProfit}`
+                          );
+                        });
+
+                        console.log(totalProfit);
+                        // Return the total profit rounded to 2 decimal places
+                        return totalProfit.toFixed(2);
                       })()}
                     </>
                   ) : (
                     0
                   )}
                 </TableCell>
-
                 <TableCell>
                   <Button
                     icon
@@ -232,7 +251,7 @@ const Order = ({ positionStore }) => {
                   >
                     <Icon name="trash" />
                   </Button>
-                </TableCell>
+                </TableCell>{" "}
               </>
             )}
             {contentIndex !== 0 && (

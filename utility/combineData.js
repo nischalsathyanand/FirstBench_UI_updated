@@ -15,8 +15,8 @@ export default function combineData(data) {
         price: 0,
         lots: [],
         lotsize: 0,
-        investment: 0,
-        profitdata: 0,
+        investment: [],
+        profitdata: [],
         lastUpdate: item.lastUpdate,
         rowspan: 1,
       };
@@ -38,10 +38,22 @@ export default function combineData(data) {
       item: item.lots,
       lastUpdate: item.lastUpdate,
     });
+    // convert investement into a list and store them seperatly
+    combinedData[key].investment.push({
+      item: item.investment,
+      lastUpdate: item.lastUpdate,
+    });
+
+    combinedData[key].profitdata.push({
+      item: item.profitdata,
+      lastUpdate: item.lastUpdate,
+    });
+
     combinedData[key].lotsize += parseFloat(item.lotsize);
     combinedData[key].price += parseFloat(item.price);
-    combinedData[key].profitdata += parseFloat(item.profitdata);
-    combinedData[key].investment += parseFloat(item.investment);
+
+    //combinedData[key].profitdata += parseFloat(item.profitdata);
+    //combinedData[key].investment += parseFloat(item.investment);
   });
 
   return Object.values(combinedData);
