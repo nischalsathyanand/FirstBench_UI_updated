@@ -12,7 +12,7 @@ export default function combineData(data) {
         symbol_token: [],
         bs: [],
         expdate: item.expdate,
-        price: 0,
+        price: [],
         lots: [],
         lotsize: 0,
         investment: [],
@@ -49,8 +49,13 @@ export default function combineData(data) {
       lastUpdate: item.lastUpdate,
     });
 
+    combinedData[key].price.push({
+      item: item.price,
+      lastUpdate: item.lastUpdate,
+    });
+
     combinedData[key].lotsize += parseFloat(item.lotsize);
-    combinedData[key].price += parseFloat(item.price);
+    //combinedData[key].price += parseFloat(item.price);
 
     //combinedData[key].profitdata += parseFloat(item.profitdata);
     //combinedData[key].investment += parseFloat(item.investment);

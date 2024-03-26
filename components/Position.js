@@ -22,7 +22,7 @@ import positionStore from "/store/positionStore";
 import combineData from "../utility/combineData";
 import floatToString from "../utility/floatToString";
 const Position = ({ handleStepClick }) => {
-  const [price, setPrice] = useState("");
+  //const [price, setPrice] = useState("");
   const [saveButton, setSaveButton] = useState(false);
   const [priceError, setPriceError] = useState(false);
   const [lotsError, setLotsError] = useState(false);
@@ -78,6 +78,12 @@ const Position = ({ handleStepClick }) => {
   const expdate = [
     { key: "22/10/2024", text: "22/10/2024", value: "22/10/2024" },
     { key: "22/10/2025", text: "22/10/2025", value: "22/10/2025" },
+  ];
+  const price = [
+    { key: "1", text: "25000", value: "25000" },
+    { key: "2", text: "70000", value: "70000" },
+    { key: "3", text: "30000", value: "30000" },
+    { key: "4", text: "60000", value: "60000" },
   ];
   const lots = [];
   for (let i = 1; i <= 100; i++) {

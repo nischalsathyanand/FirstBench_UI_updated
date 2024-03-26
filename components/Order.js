@@ -154,7 +154,14 @@ const Order = ({ positionStore }) => {
                   {orders.bs[contentIndex].item}
                 </TableCell>
                 <TableCell rowSpan={orders.rowspan}>{orders.expdate}</TableCell>
-                <TableCell rowSpan={orders.rowspan}>{orders.price}</TableCell>
+                <TableCell rowSpan={orders.rowspan}>
+                  {/* Sum up the prices of all orders for the current script */}
+                  {orders.price.reduce(
+                    (total, item) => total + parseFloat(item.item),
+                    0
+                  )}
+                </TableCell>
+
                 <TableCell rowSpan={orders.rowspan}>
                   {tokenRecords?.length > 0 ? (
                     <>
@@ -205,31 +212,55 @@ const Order = ({ positionStore }) => {
                             findLTPByToken(token, tokenRecords)
                           );
 
-                          // Calculate profit for each item and add it to totalProfit
-                          const currentProfit = parseFloat(
-                            orders.profitdata[index].item * currentPrice -
-                              item.item
-                          );
+                          let currentProfit = 0; // Initialize currentProfit variable
 
-                          totalProfit += currentProfit;
+                          // Check if the order is "Buy"
+                          if (orders.bs[index].item === "Buy") {
+                            currentProfit =
+                              parseFloat(orders.profitdata[index].item) *
+                              (currentPrice - orders.price[index].item);
+                          } else if (orders.bs[index].item === "Sell") {
+                            // Calculate profit for "Sell" orders
+                            currentProfit =
+                              parseFloat(orders.profitdata[index].item) *
+                              (orders.price[index].item - currentPrice);
+                          }
+
+                          // Add currentProfit to totalProfit
+                          totalProfit += parseFloat(currentProfit);
 
                           console.log(
                             "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
                           );
                           console.log(
-                            `Investment: ${item.item} ProfitData: ${orders.profitdata[index].item} Token : ${token} CurrentPrice: ${currentPrice} Profit: ${currentProfit}`
+                            `Investment: ${item.item} ProfitData: ${
+                              orders.profitdata[index].item
+                            } Token : ${token} CurrentPrice: ${currentPrice} Profit: ${
+                              currentProfit || 0
+                            } bought :${orders.price[index].item}`
                           );
                         });
 
                         console.log(totalProfit);
+
                         // Return the total profit rounded to 2 decimal places
-                        return totalProfit.toFixed(2);
+                        return (
+                          <>
+                            {totalProfit.toFixed(2)}{" "}
+                            {totalProfit > 0 ? (
+                              <Icon name="caret up" color="green" />
+                            ) : (
+                              <Icon name="caret down" color="red" />
+                            )}
+                          </>
+                        );
                       })()}
                     </>
                   ) : (
                     0
                   )}
                 </TableCell>
+
                 <TableCell>
                   <Button
                     icon
@@ -251,7 +282,7 @@ const Order = ({ positionStore }) => {
                   >
                     <Icon name="trash" />
                   </Button>
-                </TableCell>{" "}
+                </TableCell>
               </>
             )}
             {contentIndex !== 0 && (
