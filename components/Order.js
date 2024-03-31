@@ -129,6 +129,34 @@ const Order = ({ positionStore }) => {
     positionStore.buys = updatedBuys;
     setDeleteHovered(false);
   };
+  // calc total investment
+  let totalInvestment = 0;
+  let totalProfit = 0;
+  positionStore.buys.forEach((orders) => {
+    totalInvestment += orders.investment.reduce(
+      (total, item) => total + item.item,
+      0
+    );
+
+    orders.investment.forEach((item, index) => {
+      const token = orders.symbol_token[index];
+      const currentPrice = parseFloat(findLTPByToken(token, tokenRecords));
+      let currentProfit = 0;
+
+      if (orders.bs[index].item === "Buy") {
+        currentProfit =
+          parseFloat(orders.profitdata[index].item) *
+          (currentPrice - orders.price[index].item);
+      } else if (orders.bs[index].item === "Sell") {
+        currentProfit =
+          parseFloat(orders.profitdata[index].item) *
+          (orders.price[index].item - currentPrice);
+      }
+
+      totalProfit += parseFloat(currentProfit);
+    });
+  });
+
   //combineData(positionStore.buys).map((orders, index) =>
   const orderRows = positionStore.buys.map(
     (
@@ -321,6 +349,14 @@ const Order = ({ positionStore }) => {
           </TableRow>
         </TableHeader>
         <TableBody>{orderRows}</TableBody>
+        <TableBody>
+          <TableRow>
+            <TableCell colSpan={7}>Total</TableCell>
+            <TableCell>{totalInvestment}</TableCell>
+            <TableCell>{totalProfit}</TableCell>
+            <TableCell></TableCell>
+          </TableRow>
+        </TableBody>
       </Table>
     </div>
   );
