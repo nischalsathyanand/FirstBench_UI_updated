@@ -1,6 +1,4 @@
 import React from "react";
-import convertAndSortDates from "../utility/convertAndSortDates";
-import removeDuplicates from "../utility/removeDuplicates";
 import { inject, observer } from "mobx-react";
 import { useState, useEffect } from "react";
 import {
@@ -8,10 +6,6 @@ import {
   Button,
   Dropdown,
   Form,
-  Select,
-  label,
-  Icon,
-  Modal,
   Input,
   Message,
   Segment,
@@ -20,10 +14,8 @@ import {
 import buyStore from "/store/BuyStore";
 import positionStore from "/store/positionStore";
 import combineData from "../utility/combineData";
-import floatToString from "../utility/floatToString";
 const Position = ({ handleStepClick }) => {
   //const [price, setPrice] = useState("");
-  const [saveButton, setSaveButton] = useState(false);
   const [priceError, setPriceError] = useState(false);
   const [lotsError, setLotsError] = useState(false);
   const [scriptData, setScriptData] = useState([]);
@@ -54,19 +46,6 @@ const Position = ({ handleStepClick }) => {
     };
     fetchData();
   }, []);
-
-  const script = [
-    { key: "tata", text: "tata", value: "tata" },
-    { key: "microsoft", text: "microsoft", value: "microsoft" },
-    { key: "reliance", text: "reliance", value: "reliance" },
-    { key: "jio", text: "jio", value: "jio" },
-  ];
-  const sprice = [
-    { key: "1", text: "25000", value: "25000" },
-    { key: "2", text: "70000", value: "70000" },
-    { key: "3", text: "30000", value: "30000" },
-    { key: "4", text: "60000", value: "60000" },
-  ];
   const cepe = [
     { key: "CE", text: "CE", value: "CE" },
     { key: "PE", text: "PE", value: "PE" },
@@ -74,16 +53,6 @@ const Position = ({ handleStepClick }) => {
   const bs = [
     { key: "Buy", text: "Buy", value: "Buy" },
     { key: "Sell", text: "Sell", value: "Sell" },
-  ];
-  const expdate = [
-    { key: "22/10/2024", text: "22/10/2024", value: "22/10/2024" },
-    { key: "22/10/2025", text: "22/10/2025", value: "22/10/2025" },
-  ];
-  const price = [
-    { key: "1", text: "25000", value: "25000" },
-    { key: "2", text: "70000", value: "70000" },
-    { key: "3", text: "30000", value: "30000" },
-    { key: "4", text: "60000", value: "60000" },
   ];
   const lots = [];
   for (let i = 1; i <= 100; i++) {
@@ -114,8 +83,6 @@ const Position = ({ handleStepClick }) => {
       investment: formData.price * formData.lots * selectedLotSize,
       profitdata: formData.lots * selectedLotSize,
     });
-    console.log("+++++++");
-    console.log(buyStore.orders);
     toggleOrderCount(buyStore.orders.length);
   };
   const [orderCount, setOrderCount] = useState(0);
@@ -163,7 +130,7 @@ const Position = ({ handleStepClick }) => {
     }
     const data = await scriptDataResponse.json();
     setScriptJsonData(data);
-    console.log(data);
+
     const strikePriceArray = [];
 
     data.map((item) => {
@@ -188,17 +155,15 @@ const Position = ({ handleStepClick }) => {
     }
 
     setStrike(strikePriceDropdown);
-    console.log(strikePriceDropdown);
+
     // SetExpairy(expiryDateArrayDropdown);
     setIsLoading(false);
   };
   const handleCePeChange = async (e, { value }) => {
     setformData({ ...formData, cepe: value });
     const cepe = value;
-    console.log(value);
-    console.log(formData.sprice);
     const selectedprice = (formData.sprice * 100).toFixed(6);
-    console.log(selectedprice);
+
     //console.log(floatToString(formData.sprice * 100).toFixed(6));
     const expDateArray = [];
 
@@ -214,12 +179,10 @@ const Position = ({ handleStepClick }) => {
         filteredData.push(item);
       }
     });
-    console.log(scriptJsonData);
-    console.log(filteredData);
+
     filteredData.forEach((item) => {
       expDateArray.push(item.expiry);
     });
-    console.log(expDateArray);
 
     // Function to remove duplicates from array
     const removeDuplicates = (array) => {
@@ -241,7 +204,7 @@ const Position = ({ handleStepClick }) => {
   const handleExpDateChange = async (e, { value }) => {
     setformData({ ...formData, expdate: value });
     const expdate = value;
-    console.log(formData.sprice);
+
     const selectedprice = (formData.sprice * 100).toFixed(6);
 
     const extractedSymbolToken = [];
@@ -259,10 +222,8 @@ const Position = ({ handleStepClick }) => {
       }
     });
 
-    console.log(extractedSymbolToken);
     setSelectedCEPESymbol(extractedSymbolToken[0].symbol);
     setSelectedLotsize(extractedSymbolToken[0].lotsize);
-    console.log(selectedLotSize);
   };
 
   const returnSymbolToken = (symbol) => {
@@ -284,7 +245,7 @@ const Position = ({ handleStepClick }) => {
     //positionStore.buys.push(...ordersWithTimestamp);
     positionStore.buys.push(...combineData(ordersWithTimestamp));
     buyStore.clearOrders();
-    console.log(positionStore.buys);
+
     handleStepClick(0);
   };
   return (

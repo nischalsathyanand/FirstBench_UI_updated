@@ -1,6 +1,5 @@
 export default function combineData(data) {
   const combinedData = {};
-  console.log(data);
 
   data.forEach((item) => {
     const key = item.script;

@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
-import positionStore from "/store/positionStore";
-import combineBuys from "../utility/combinedBuys";
-import combineData from "../utility/combineData";
 import {
   TableRow,
   TableHeaderCell,
@@ -16,8 +13,6 @@ import {
 import { get } from "mobx";
 
 const Order = ({ positionStore }) => {
-  const [highlightedRows, setHighlightedRows] = useState([]);
-  const [oldRows, setOldRows] = useState([]);
   const [tokenRecords, setTokenRecords] = useState([]);
   const threshold = 5000;
   const [deleteHovered, setDeleteHovered] = useState(false);
@@ -67,7 +62,6 @@ const Order = ({ positionStore }) => {
           throw new Error("Failed to fetch data");
         }
         const data = await response.json();
-        console.log(data);
 
         const fetchedItems = data.postion.data.fetched.map((item) => {
           return {
@@ -93,9 +87,6 @@ const Order = ({ positionStore }) => {
         // Combine fetched and unfetched items
         const combinedItems = fetchedItems.concat(unfetchedItems);
 
-        console.log("--------------------");
-        console.log(combinedItems);
-
         return combinedItems;
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -105,7 +96,6 @@ const Order = ({ positionStore }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log("---------------------");
       const token_list = getTokenList();
 
       const token_record = await amendTokenRecordLTP(token_list);
@@ -256,20 +246,7 @@ const Order = ({ positionStore }) => {
 
                           // Add currentProfit to totalProfit
                           totalProfit += parseFloat(currentProfit);
-
-                          console.log(
-                            "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
-                          );
-                          console.log(
-                            `Investment: ${item.item} ProfitData: ${
-                              orders.profitdata[index].item
-                            } Token : ${token} CurrentPrice: ${currentPrice} Profit: ${
-                              currentProfit || 0
-                            } bought :${orders.price[index].item}`
-                          );
                         });
-
-                        console.log(totalProfit);
 
                         // Return the total profit rounded to 2 decimal places
                         return (
@@ -353,7 +330,7 @@ const Order = ({ positionStore }) => {
           <TableRow>
             <TableCell colSpan={7}>Total</TableCell>
             <TableCell>{totalInvestment}</TableCell>
-            <TableCell>{totalProfit}</TableCell>
+            <TableCell>{totalProfit.toFixed(2)}</TableCell>
             <TableCell></TableCell>
           </TableRow>
         </TableBody>

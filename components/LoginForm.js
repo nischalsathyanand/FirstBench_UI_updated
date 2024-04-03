@@ -36,9 +36,9 @@ const LoginForm = () => {
       }
 
       // Handle successful login, e.g., redirect to dashboard
-      console.log("Login successful");
+
       const result = await response.json();
-      console.log(result);
+
       setAuthenticated(true);
     } catch (error) {
       console.error("Error:", error.message);

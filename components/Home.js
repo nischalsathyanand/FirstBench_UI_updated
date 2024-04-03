@@ -8,11 +8,8 @@ import { useLocation } from "react-router-dom";
 import "../index.css";
 import {
   Container,
-  Divider,
-  Grid,
   Header,
   Image,
-  List,
   Menu,
   Segment,
   Step,
@@ -21,7 +18,6 @@ import {
   StepDescription,
   StepContent,
   Icon,
-  Button,
 } from "semantic-ui-react";
 
 function Home() {
